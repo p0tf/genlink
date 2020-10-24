@@ -1,0 +1,23 @@
+[package]
+name = "genlink"
+version = "0.1.0"
+description = "General interface for linkers."
+authors = ["watcol <kantaa058@gmail.com>"]
+homepage = "https://github.com/watcol/genlink"
+repository = "https://github.com/watcol/genlink"
+keywords = ["link", "linker", "interface"]
+categories = ["development-tools::build-utils"]
+license = "MIT"
+readme = "README.md"
+edition = "2018"
+
+include = [
+  "README.md",
+  "Cargo.toml",
+  "src/**/*.rs"
+]
+
+[dependencies]
+
+[package.metadata.docs.rs]
+all-features = true
