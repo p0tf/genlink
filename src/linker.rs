@@ -1,5 +1,5 @@
-use std::process::Command;
 use crate::OsStr;
+use std::process::Command;
 
 /// The Trait to Integrate Linkers
 pub trait Linker {

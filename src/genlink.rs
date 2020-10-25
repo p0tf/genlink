@@ -1,7 +1,7 @@
-use std::process::Command;
 use std::path::PathBuf;
+use std::process::Command;
 
-use crate::{Linker, LinkResult, OsStr, OsString};
+use crate::{LinkResult, Linker, OsStr, OsString};
 
 /// General Linker Interface
 pub struct GenLink<L> {
