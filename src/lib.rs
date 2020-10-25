@@ -1,5 +1,4 @@
 //! **Gen**eral interface for **Link**ers.
-use std::process::Command;
 
 /// The Linker Property
 ///
@@ -30,7 +29,6 @@ pub struct Arg {
     pub value: Option<String>,
 }
 
-
 /// The Trait to Integrate Linkers
 ///
 /// # Example
@@ -50,11 +48,11 @@ pub struct Arg {
 ///         }
 ///     }
 ///
-///     fn add_arg(&self, cmd: &mut Command, arg: &'static str, value: Option<String>) {
+///     fn add_arg(&self, arg: &'static str, value: Option<String>) -> Vec<String> {
 ///         match value {
-///             Some(v) => cmd.arg(format!("/{}:{}", arg, v)),
-///             None => cmd.arg(format!("/{}", arg)),
-///         };
+///             Some(v) => vec![format!("/{}:{}", arg, v)],
+///             None => vec![format!("/{}", arg)],
+///         }
 ///     }
 /// }
 /// ```
@@ -67,12 +65,12 @@ pub trait Linker {
     /// > **Note**
     /// >
     /// > Most linkers work with the default implementation, but you can edit it if needed.
-    fn add_object(&self, cmd: &mut Command, value: &'static str) {
-        cmd.arg(value);
+    fn add_object(&self, value: String) -> Vec<String> {
+        vec![value]
     }
 
     /// Add an argument.
-    fn add_arg(&self, cmd: &mut Command, arg: &'static str, value: Option<String>);
+    fn add_arg(&self, arg: &'static str, value: Option<String>) -> Vec<String>;
 }
 
 struct Ld;
@@ -86,10 +84,11 @@ impl Linker for Ld {
         }
     }
 
-    fn add_arg(&self, cmd: &mut Command, arg: &'static str, value: Option<String>) {
-        cmd.arg(arg);
+    fn add_arg(&self, arg: &'static str, value: Option<String>) -> Vec<String> {
+        let mut v = vec![arg.to_string()];
         if let Some(s) = value {
-            cmd.arg(s);
+            v.push(s);
         }
+        v
     }
 }
