@@ -1,48 +1,56 @@
 //! **Gen**eral interface for **Link**ers.
 use std::process::Command;
 
-/// List of Command Line Options
+/// The Linker Property
 ///
-/// Enumerate options of your linker with this struct.
-/// It'll be used by "Linker::options".
-///
-/// You can describe the basic options (such as "-o", "-L", etc.) to each field, and
-/// linker-specific options to `custom` field as `HashSet`.
-///
-/// > **Note**:
-/// >
-/// > If some of the basic options are not supported by your linker, please use `unimplemented`
-/// > macro.
-///
-/// # Example
-///
-/// ```
-/// # use genlink::Options;
-/// // Gnu's `ld` linker.
-/// Options {
-///     name: "ld",
-/// };
-/// ```
-pub struct Options {
+/// Set linker property to this structure.
+#[derive(Debug, Clone)]
+pub struct Property {
+    /// The command name of the linker.
     pub name: &'static str,
+    /// Required arguments which are always passed.
+    pub required_args: Vec<Arg>,
+    /// Basic arguments.
+    pub basic_args: BasicArgs,
 }
+
+/// Basic Arguments
+///
+/// This struct is used by `Property` and to enumerate basic options
+/// that all linkers should have.
+#[derive(Debug, Clone)]
+pub struct BasicArgs {}
+
+/// A Command Line Argument
+///
+/// This sturct is to express a command line argument.
+#[derive(Debug, Clone, Hash)]
+pub struct Arg {
+    pub arg: &'static str,
+    pub value: Option<String>,
+}
+
 
 /// The Trait to Integrate Linkers
 ///
 /// # Example
 ///
 /// ```
-/// # use genlink::{Linker, Options};
+/// # use genlink::{Linker, Property, BasicArgs};
 /// # use std::process::Command;
 /// /// Microsoft's `link` linker.
 /// struct Link;
 ///
 /// impl Linker for Link {
-///     fn options(&self) -> Options {
-///         Options { name: "link" }
+///     fn options(&self) -> Property {
+///         Property {
+///             name: "link",
+///             required_args: vec![],
+///             basic_args: BasicArgs {},
+///         }
 ///     }
 ///
-///     fn add_arg(&self, cmd: &mut Command, arg: &'static str, value: Option<&'static str>) {
+///     fn add_arg(&self, cmd: &mut Command, arg: &'static str, value: Option<String>) {
 ///         match value {
 ///             Some(v) => cmd.arg(format!("/{}:{}", arg, v)),
 ///             None => cmd.arg(format!("/{}", arg)),
@@ -52,7 +60,7 @@ pub struct Options {
 /// ```
 pub trait Linker {
     /// Return `Option` of your linker.
-    fn options(&self) -> Options;
+    fn options(&self) -> Property;
 
     /// Add an object.
     ///
@@ -64,17 +72,21 @@ pub trait Linker {
     }
 
     /// Add an argument.
-    fn add_arg(&self, cmd: &mut Command, arg: &'static str, value: Option<&'static str>);
+    fn add_arg(&self, cmd: &mut Command, arg: &'static str, value: Option<String>);
 }
 
 struct Ld;
 
 impl Linker for Ld {
-    fn options(&self) -> Options {
-        Options { name: "ld" }
+    fn options(&self) -> Property {
+        Property {
+            name: "ld",
+            required_args: vec![],
+            basic_args: BasicArgs {},
+        }
     }
 
-    fn add_arg(&self, cmd: &mut Command, arg: &'static str, value: Option<&'static str>) {
+    fn add_arg(&self, cmd: &mut Command, arg: &'static str, value: Option<String>) {
         cmd.arg(arg);
         if let Some(s) = value {
             cmd.arg(s);
