@@ -1,4 +1,4 @@
-/// General Result type.
+/// The General Result Type
 pub type LinkResult<T> = Result<T, LinkError>;
 
 use std::error::Error;
@@ -6,22 +6,22 @@ use std::fmt;
 use std::io;
 use std::process::Output;
 
-/// Link Error.
+/// The Linking Error
 #[derive(Debug)]
 pub enum LinkError {
-    IO(io::Error),
     Cmd(Output),
-}
-
-impl From<io::Error> for LinkError {
-    fn from(e: io::Error) -> Self {
-        LinkError::IO(e)
-    }
+    IO(io::Error),
 }
 
 impl From<Output> for LinkError {
     fn from(o: Output) -> Self {
         LinkError::Cmd(o)
+    }
+}
+
+impl From<io::Error> for LinkError {
+    fn from(e: io::Error) -> Self {
+        LinkError::IO(e)
     }
 }
 

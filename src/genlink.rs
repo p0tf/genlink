@@ -6,7 +6,7 @@ use crate::{LinkResult, Linker, OsStr, OsString};
 /// General Linker Interface
 pub struct GenLink<L> {
     linker: L,
-    dest: OsString,
+    output: OsString,
     command: Command,
 }
 
@@ -14,18 +14,18 @@ impl<L: Linker> GenLink<L> {
     /// Create new instance.
     pub fn new(linker: L) -> Self {
         let mut command = Command::new(linker.name());
-        let dest = linker.def_dest().into();
+        let output = linker.default_output().into();
         linker.preproc(&mut command);
         Self {
             linker,
-            dest,
+            output,
             command,
         }
     }
 
-    /// Set the destination.
-    pub fn dest<T: Into<OsString>>(&mut self, path: T) -> &mut Self {
-        self.dest = path.into();
+    /// Set the output file.
+    pub fn output<T: Into<OsString>>(&mut self, path: T) -> &mut Self {
+        self.output = path.into();
         self
     }
 
@@ -86,8 +86,8 @@ impl<L: Linker> GenLink<L> {
 
     /// Link the objects and return the path of the emitted file.
     pub fn link(&mut self) -> LinkResult<PathBuf> {
-        let dest = std::fs::canonicalize(&self.dest)?;
-        self.linker.dest(&mut self.command, dest.as_os_str());
+        let dest = std::fs::canonicalize(&self.output)?;
+        self.linker.output(&mut self.command, dest.as_os_str());
         let output = self.command.output()?;
 
         if output.status.success() {
