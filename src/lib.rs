@@ -1,6 +1,8 @@
 //! **Gen**eral interface for **Link**ers.
-use std::path::PathBuf;
+//!
+//! For example implementations, see [genlink-impl](https://github.com/watcol/genlink-impl).
 use std::io;
+use std::path::PathBuf;
 use std::process::Command;
 
 // Re-exports
@@ -17,10 +19,11 @@ impl<L: Linker> GenLink<L> {
     /// Create new instance.
     pub fn new(linker: L) -> Self {
         let mut command = Command::new(linker.name());
+        let dest = linker.def_dest().into();
         linker.preproc(&mut command);
         Self {
             linker,
-            dest: OsStr::new("a.out").into(),
+            dest,
             command,
         }
     }
@@ -125,16 +128,22 @@ pub trait Linker {
     /// Return the name of your linker.
     fn name(&self) -> &'static OsStr;
 
+    /// Return the default output file.
+    ///
+    /// As the default this function returns "a.out".
+    fn def_dest(&self) -> &'static OsStr {
+        OsStr::new("a.out")
+    }
+
     /// Preprocess the linker. (set required arguments, variables, etc.)
     ///
-    /// As the default, this function do nothing. You can modify the behavior if needed.
+    /// As the default, this function do nothing.
     #[allow(unused)]
     fn preproc(&self, cmd: &mut Command) {}
 
     /// Add an object.
     ///
-    /// As the default, this function just add path to the arguments. You can modify the
-    /// behavior if needed.
+    /// As the default, this function just add path to the arguments.
     fn obj(&self, cmd: &mut Command, path: &OsStr) {
         cmd.arg(path);
     }
