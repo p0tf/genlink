@@ -1,89 +1,51 @@
 //! **Gen**eral interface for **Link**ers.
-
-/// The Linker Property
-///
-/// Set linker property to this structure.
-#[derive(Debug, Clone)]
-pub struct Property {
-    /// The command name of the linker.
-    pub name: &'static str,
-    /// Required arguments which are always passed.
-    pub required_args: Vec<Arg>,
-    /// Basic arguments.
-    pub basic_args: BasicArgs,
-}
-
-/// Basic Arguments
-///
-/// This struct is used by `Property` and to enumerate basic options
-/// that all linkers should have.
-#[derive(Debug, Clone)]
-pub struct BasicArgs {}
-
-/// A Command Line Argument
-///
-/// This sturct is to express a command line argument.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Arg {
-    pub arg: &'static str,
-    pub value: Option<String>,
-}
-
-impl Arg {
-    /// Create new argument.
-    pub fn new(arg: &'static str) -> Self {
-        Self { arg, value: None }
-    }
-
-    /// Pass a value.
-    pub fn value(mut self, value: String) -> Self {
-        self.value = Some(value);
-        self
-    }
-}
+use std::process::Command;
 
 /// The Trait to Integrate Linkers
 ///
 /// # Example
 ///
 /// ```
-/// # use genlink::{Linker, Property, BasicArgs, Arg};
+/// # use genlink::Linker;
 /// # use std::process::Command;
 /// /// Microsoft's `link` linker.
 /// struct Link;
 ///
 /// impl Linker for Link {
-///     fn options(&self) -> Property {
-///         Property {
-///             name: "link",
-///             required_args: vec![],
-///             basic_args: BasicArgs {},
-///         }
-///     }
-///
-///     fn add_arg(&self, arg: Arg) -> Vec<String> {
-///         match arg.value {
-///             Some(v) => vec![format!("/{}:{}", arg.arg, v)],
-///             None => vec![format!("/{}", arg.arg)],
-///         }
+///     fn name(&self) -> &'static str { "link" }
+///     fn dest(&self, cmd: &mut Command, path: &str) { cmd.arg(format!("/out:{}", path)); }
+///     fn lib(&self, cmd: &mut Command, path: &str) { cmd.arg(path); }
+///     fn lib_path(&self, cmd: &mut Command, path: &str) {
+///         cmd.arg(format!("/libpath:{}", path));
 ///     }
 /// }
 /// ```
 pub trait Linker {
-    /// Return `Option` of your linker.
-    fn options(&self) -> Property;
+    /// Return the name of your linker.
+    fn name(&self) -> &'static str;
+
+    /// Preprocess the linker. (set required arguments, variables, etc.)
+    ///
+    /// As the default, this function do nothing. You can modify the behavior if needed.
+    #[allow(unused)]
+    fn preproc(&self, cmd: &mut Command) {}
 
     /// Add an object.
     ///
-    /// > **Note**
-    /// >
-    /// > Most linkers work with the default implementation, but you can edit it if needed.
-    fn add_object(&self, value: String) -> Vec<String> {
-        vec![value]
+    /// As the default, this function just add path to the arguments. You can modify the
+    /// behavior if needed.
+    fn add_object(&self, cmd: &mut Command, obj: String) {
+        cmd.arg(obj);
     }
 
-    /// Add an argument.
-    fn add_arg(&self, arg: Arg) -> Vec<String>;
+    /// Set destination to the file. ("-o" option in `ld`)
+    fn dest(&self, cmd: &mut Command, path: &str);
+
+    /// Search and add library in the library path. ("-l" option in `ld`)
+    fn lib(&self, cmd: &mut Command, path: &str);
+
+    /// Add library searching path. ("-L" option in `ld`)
+    fn lib_path(&self, cmd: &mut Command, path: &str);
 }
 
 // -- Test --
@@ -91,19 +53,19 @@ pub trait Linker {
 struct Ld;
 
 impl Linker for Ld {
-    fn options(&self) -> Property {
-        Property {
-            name: "ld",
-            required_args: vec![],
-            basic_args: BasicArgs {},
-        }
+    fn name(&self) -> &'static str {
+        "ld"
     }
 
-    fn add_arg(&self, arg: Arg) -> Vec<String> {
-        let mut v = vec![arg.arg.to_string()];
-        if let Some(s) = arg.value {
-            v.push(s);
-        }
-        v
+    fn dest(&self, cmd: &mut Command, path: &str) {
+        cmd.args(&["-o", path]);
+    }
+
+    fn lib(&self, cmd: &mut Command, path: &str) {
+        cmd.args(&["-l", path]);
+    }
+
+    fn lib_path(&self, cmd: &mut Command, path: &str) {
+        cmd.args(&["-L", path]);
     }
 }
