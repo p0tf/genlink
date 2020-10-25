@@ -23,10 +23,23 @@ pub struct BasicArgs {}
 /// A Command Line Argument
 ///
 /// This sturct is to express a command line argument.
-#[derive(Debug, Clone, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Arg {
     pub arg: &'static str,
     pub value: Option<String>,
+}
+
+impl Arg {
+    /// Create new argument.
+    pub fn new(arg: &'static str) -> Self {
+        Self { arg, value: None }
+    }
+
+    /// Pass a value.
+    pub fn value(mut self, value: String) -> Self {
+        self.value = Some(value);
+        self
+    }
 }
 
 /// The Trait to Integrate Linkers
@@ -34,7 +47,7 @@ pub struct Arg {
 /// # Example
 ///
 /// ```
-/// # use genlink::{Linker, Property, BasicArgs};
+/// # use genlink::{Linker, Property, BasicArgs, Arg};
 /// # use std::process::Command;
 /// /// Microsoft's `link` linker.
 /// struct Link;
@@ -48,10 +61,10 @@ pub struct Arg {
 ///         }
 ///     }
 ///
-///     fn add_arg(&self, arg: &'static str, value: Option<String>) -> Vec<String> {
-///         match value {
-///             Some(v) => vec![format!("/{}:{}", arg, v)],
-///             None => vec![format!("/{}", arg)],
+///     fn add_arg(&self, arg: Arg) -> Vec<String> {
+///         match arg.value {
+///             Some(v) => vec![format!("/{}:{}", arg.arg, v)],
+///             None => vec![format!("/{}", arg.arg)],
 ///         }
 ///     }
 /// }
@@ -70,8 +83,10 @@ pub trait Linker {
     }
 
     /// Add an argument.
-    fn add_arg(&self, arg: &'static str, value: Option<String>) -> Vec<String>;
+    fn add_arg(&self, arg: Arg) -> Vec<String>;
 }
+
+// -- Test --
 
 struct Ld;
 
@@ -84,9 +99,9 @@ impl Linker for Ld {
         }
     }
 
-    fn add_arg(&self, arg: &'static str, value: Option<String>) -> Vec<String> {
-        let mut v = vec![arg.to_string()];
-        if let Some(s) = value {
+    fn add_arg(&self, arg: Arg) -> Vec<String> {
+        let mut v = vec![arg.arg.to_string()];
+        if let Some(s) = arg.value {
             v.push(s);
         }
         v
