@@ -29,7 +29,7 @@ impl<'a, L: Linker> GenLink<'a, L> {
 
     /// Add an object.
     pub fn obj(&mut self, path: &'a str) -> &mut Self {
-        self.linker.add_object(&mut self.command, path);
+        self.linker.obj(&mut self.command, path);
         self
     }
 
@@ -62,18 +62,18 @@ impl<'a, L: Linker> GenLink<'a, L> {
     }
 
     /// Add a library path.
-    pub fn lib_path(&mut self, path: &'a str) -> &mut Self {
-        self.linker.lib_path(&mut self.command, path);
+    pub fn path(&mut self, path: &'a str) -> &mut Self {
+        self.linker.path(&mut self.command, path);
         self
     }
 
     /// Add library paths.
-    pub fn lib_paths<T>(&mut self, paths: T) -> &mut Self
+    pub fn paths<T>(&mut self, paths: T) -> &mut Self
     where
         T: IntoIterator<Item = &'a str>,
     {
         for path in paths {
-            self.lib_path(path);
+            self.path(path);
         }
         self
     }
@@ -100,7 +100,7 @@ impl<'a, L: Linker> GenLink<'a, L> {
 ///     fn name(&self) -> &'static str { "link" }
 ///     fn dest(&self, cmd: &mut Command, path: &str) { cmd.arg(format!("/out:{}", path)); }
 ///     fn lib(&self, cmd: &mut Command, path: &str) { cmd.arg(path); }
-///     fn lib_path(&self, cmd: &mut Command, path: &str) {
+///     fn path(&self, cmd: &mut Command, path: &str) {
 ///         cmd.arg(format!("/libpath:{}", path));
 ///     }
 /// }
@@ -119,7 +119,7 @@ pub trait Linker {
     ///
     /// As the default, this function just add path to the arguments. You can modify the
     /// behavior if needed.
-    fn add_object(&self, cmd: &mut Command, path: &str) {
+    fn obj(&self, cmd: &mut Command, path: &str) {
         cmd.arg(path);
     }
 
@@ -130,7 +130,7 @@ pub trait Linker {
     fn lib(&self, cmd: &mut Command, path: &str);
 
     /// Add library searching path. ("-L" option in `ld`)
-    fn lib_path(&self, cmd: &mut Command, path: &str);
+    fn path(&self, cmd: &mut Command, path: &str);
 }
 
 // -- Test --
@@ -150,7 +150,7 @@ impl Linker for Ld {
         cmd.args(&["-l", path]);
     }
 
-    fn lib_path(&self, cmd: &mut Command, path: &str) {
+    fn path(&self, cmd: &mut Command, path: &str) {
         cmd.args(&["-L", path]);
     }
 }
