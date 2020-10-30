@@ -7,6 +7,22 @@
 
 **Gen**eral interface for **Link**ers.
 
+## Usage
+To use in your program:
+*Cargo.toml*
+```toml
+[dependencies]
+genlink = "0.1.0"
+...
+```
+
+To add (an) implementation(s):
+```toml
+[dependencies]
+genlink = { version = "0.1.0", default-features = false }
+...
+```
+
 ## Documents
 API Documents are available on [docs.rs](https://docs.rs/genlink).
 
