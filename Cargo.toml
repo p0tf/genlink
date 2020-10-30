@@ -17,7 +17,9 @@ include = [
   "src/**/*.rs"
 ]
 
-[dependencies]
+[features]
+default = ["std"]
+std = []
 
 [package.metadata.docs.rs]
 all-features = true
