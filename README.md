@@ -9,13 +9,16 @@
 
 ## Usage
 To use in your program:
-*Cargo.toml*
+
+<small>*Cargo.toml*</small>
 ```toml
 [dependencies]
 genlink = "0.1.0"
 ```
 
 To add (an) implementation(s):
+
+<small>*Cargo.toml*</small>
 ```toml
 [dependencies]
 genlink = { version = "0.1.0", default-features = false }
