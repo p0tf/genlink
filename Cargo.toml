@@ -17,9 +17,5 @@ include = [
   "src/**/*.rs"
 ]
 
-[features]
-default = ["std"]
-std = []
-
 [package.metadata.docs.rs]
 all-features = true

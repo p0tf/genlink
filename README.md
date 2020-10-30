@@ -8,20 +8,10 @@
 **Gen**eral interface for **Link**ers.
 
 ## Usage
-To use in your program:
-
-<small>*Cargo.toml*</small>
+Add to *Cargo.toml*:
 ```toml
 [dependencies]
 genlink = "0.1.0"
-```
-
-To add (an) implementation(s):
-
-<small>*Cargo.toml*</small>
-```toml
-[dependencies]
-genlink = { version = "0.1.0", default-features = false }
 ```
 
 ## Documents
