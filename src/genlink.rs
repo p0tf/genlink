@@ -46,20 +46,38 @@ impl<L: Linker> GenLink<L> {
         Ok(self)
     }
 
-    /// Add a library.
-    pub fn lib<T: AsRef<OsStr>>(&mut self, path: T) -> &mut Self {
-        self.linker.lib(&mut self.command, path.as_ref());
+    /// Add a dynamic library.
+    pub fn dylib<T: AsRef<OsStr>>(&mut self, path: T) -> &mut Self {
+        self.linker.dylib(&mut self.command, path.as_ref());
         self
     }
 
     /// Add libraries.
-    pub fn libs<T, TS>(&mut self, paths: TS) -> &mut Self
+    pub fn dylibs<T, TS>(&mut self, paths: TS) -> &mut Self
     where
         T: AsRef<OsStr>,
         TS: IntoIterator<Item = T>,
     {
         for path in paths {
-            self.lib(path);
+            self.dylib(path);
+        }
+        self
+    }
+
+    /// Add a static library.
+    pub fn staticlib<T: AsRef<OsStr>>(&mut self, path: T) -> &mut Self {
+        self.linker.staticlib(&mut self.command, path.as_ref());
+        self
+    }
+
+    /// Add libraries.
+    pub fn staticlibs<T, TS>(&mut self, paths: TS) -> &mut Self
+    where
+        T: AsRef<OsStr>,
+        TS: IntoIterator<Item = T>,
+    {
+        for path in paths {
+            self.staticlib(path);
         }
         self
     }

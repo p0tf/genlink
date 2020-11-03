@@ -30,9 +30,14 @@ pub trait Linker {
     /// Set the output file. (like `ld -o`)
     fn output(&self, cmd: &mut Command, path: &OsStr);
 
-    /// Search and add library in the library path. (like `ld -l`)
-    fn lib(&self, cmd: &mut Command, path: &OsStr);
+    #[deprecated(since = "0.2.0", note = "Please use `dylib` or `staticlib` instead.")]
+    #[allow(unused)]
+    fn lib(&self, cmd: &mut Command, path: &OsStr) {}
 
+    /// Add a dynamic library. (like `ld -Bdynamic -l`)
+    fn dylib(&self, cmd: &mut Command, name: &OsStr);
+    /// Add a static library. (like `ld -Bdynamic -l`)
+    fn staticlib(&self, cmd: &mut Command, name: &OsStr);
     /// Add library searching path. (like `ld -L`)
     fn path(&self, cmd: &mut Command, path: &OsStr);
 }
