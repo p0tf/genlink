@@ -3,19 +3,20 @@ use std::process::Command;
 
 /// The Trait to Integrate Linkers
 pub trait Linker {
-    /// Return the name of your linker.
-    fn name(&self) -> &'static OsStr;
+    /// Return the initialized command.
+    fn cmd(&self) -> Command;
 
-    /// Return the default output file.
-    ///
-    /// As the default, this function returns `"a.out"`.
+    #[deprecated(since = "0.2.0", note = "Please use `cmd` instead.")]
+    fn name(&self) -> &'static OsStr {
+        OsStr::new("`name` is deprecated. Use `cmd`.")
+    }
+
+    #[deprecated(since = "0.2.0", note = "This function is no longer used.")]
     fn default_output(&self) -> &'static OsStr {
         OsStr::new("a.out")
     }
 
-    /// Preprocess the linker. (set required arguments, variables, etc.)
-    ///
-    /// As the default, this function does nothing.
+    #[deprecated(since = "0.1.1", note = "Please use `cmd` instead.")]
     #[allow(unused)]
     fn preproc(&self, cmd: &mut Command) {}
 

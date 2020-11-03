@@ -13,12 +13,10 @@ pub struct GenLink<L> {
 impl<L: Linker> GenLink<L> {
     /// Create new instance.
     pub fn new(linker: L) -> Self {
-        let mut command = Command::new(linker.name());
-        let output = linker.default_output().into();
-        linker.preproc(&mut command);
+        let command = linker.cmd();
         Self {
             linker,
-            output,
+            output: "a.out".into(),
             command,
         }
     }
