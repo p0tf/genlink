@@ -1,10 +1,30 @@
 use crate::OsStr;
 use std::process::Command;
 
+/// The output format.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum OutputFormat {
+    DynamicExe,
+    DynamicPicExe,
+    StaticExe,
+    StaticPicLib,
+    DynamicDyLib,
+    StaticDyLib,
+}
+
+impl Default for OutputFormat {
+    fn default() -> Self {
+        OutputFormat::DynamicExe
+    }
+}
+
 /// The Trait to Integrate Linkers
 pub trait Linker {
     /// Return the initialized command.
     fn cmd(&self) -> Command;
+
+    /// Set the output format.
+    fn format(&self, cmd: &mut Command, format: OutputFormat);
 
     /// Add an object.
     ///

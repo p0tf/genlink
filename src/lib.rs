@@ -16,7 +16,7 @@ mod linker;
 pub use crate::{
     error::{LinkError, LinkResult},
     genlink::GenLink,
-    linker::Linker,
+    linker::{Linker, OutputFormat},
 };
 
 pub use std::ffi::{OsStr, OsString};
