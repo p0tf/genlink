@@ -50,7 +50,7 @@ impl OutputFormat {
             DynamicExe => StaticExe,
             DynamicPicExe => StaticPicExe,
             DynamicDyLib => StaticDyLib,
-            i => *i
+            i => *i,
         }
     }
 
@@ -59,7 +59,7 @@ impl OutputFormat {
             StaticExe => DynamicExe,
             StaticPicExe => DynamicPicExe,
             StaticDyLib => DynamicDyLib,
-            i => *i
+            i => *i,
         }
     }
 
@@ -67,7 +67,7 @@ impl OutputFormat {
         match self {
             DynamicExe => DynamicPicExe,
             StaticExe => StaticPicExe,
-            i => *i
+            i => *i,
         }
     }
 
@@ -75,7 +75,7 @@ impl OutputFormat {
         match self {
             StaticPicExe => StaticExe,
             DynamicPicExe => DynamicExe,
-            i => *i
+            i => *i,
         }
     }
 
@@ -83,7 +83,7 @@ impl OutputFormat {
         match self {
             DynamicExe | DynamicPicExe => DynamicDyLib,
             StaticExe | StaticPicExe => StaticDyLib,
-            i => *i
+            i => *i,
         }
     }
 
@@ -91,7 +91,7 @@ impl OutputFormat {
         match self {
             StaticDyLib => StaticExe,
             DynamicDyLib => DynamicExe,
-            i => *i
+            i => *i,
         }
     }
 }

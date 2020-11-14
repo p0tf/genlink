@@ -5,7 +5,6 @@ pub use format::OutputFormat;
 use crate::OsStr;
 use std::process::Command;
 
-
 /// The Trait to Integrate Linkers
 pub trait Linker {
     /// Return the name of your command.
