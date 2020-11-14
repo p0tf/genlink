@@ -19,6 +19,7 @@ include = [
 
 [dependencies]
 which = "4.0"
+thiserror = "1.0"
 
 [package.metadata.docs.rs]
 all-features = true
