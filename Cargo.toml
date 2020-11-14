@@ -17,5 +17,8 @@ include = [
   "src/**/*.rs"
 ]
 
+[dependencies]
+which = "4.0"
+
 [package.metadata.docs.rs]
 all-features = true

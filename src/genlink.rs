@@ -1,3 +1,5 @@
+extern crate which;
+
 use std::path::PathBuf;
 use std::process::Command;
 
@@ -21,6 +23,11 @@ impl<L: Linker> GenLink<L> {
             output: "a.out".into(),
             command,
         }
+    }
+
+    /// Check whether the linker exists on the `PATH`.
+    pub fn ok(&self) -> bool {
+        which::which(self.linker.name()).is_ok()
     }
 
     /// Set the output file.
