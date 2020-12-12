@@ -2,9 +2,9 @@
 name = "genlink"
 version = "0.2.0"
 description = "General interface for linkers."
-authors = ["Potf <potfman@gmail.com>"]
-homepage = "https://github.com/p0tf/genlink"
-repository = "https://github.com/p0tf/genlink"
+authors = ["PotfMan <potfman@gmail.com>"]
+homepage = "https://github.com/potfman/genlink"
+repository = "https://github.com/potfman/genlink"
 keywords = ["link", "linker", "interface"]
 categories = ["development-tools"]
 license = "MIT"
