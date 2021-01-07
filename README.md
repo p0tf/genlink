@@ -1,4 +1,4 @@
-# GenLink
+# [Discontinued] GenLink
 [![crates.io](https://img.shields.io/crates/v/genlink)](https://crates.io/crates/genlink)
 [![docs.rs](https://docs.rs/genlink/badge.svg)](https://docs.rs/genlink)
 [![Downloads](https://img.shields.io/crates/d/genlink)](https://crates.io/crates/genlink)
@@ -6,6 +6,8 @@
 [![License](https://img.shields.io/crates/l/genlink)](https://github.com/potfman/genlink/blob/main/LICENSE)
 
 **Gen**eral interface for **Link**ers.
+
+**WARNING: This project is discontinued.**
 
 ## Usage
 Add to *Cargo.toml*:
